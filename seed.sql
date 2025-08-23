@@ -31,7 +31,7 @@ INSERT INTO Schools (name) VALUES
 -- Demo Super Admin User
 -- Password is 'demo_super_admin'
 INSERT INTO Users (username, password_hash, role) VALUES
-('demo_super_admin', 'scrypt:32768:8:1$Y1Zq2n2YwX1mY1Zq$c2e1b1d3e1f1a1b1c1d1e1f1a1b1c1d1e1f1a1b1c1d1e1f1a1b1c1d1e1f1a1b1', 'super_admin');
+('demo_super_admin', 'scrypt:32768:8:1$2T5lKTnEdcYQDzXw$4e87879f2ecc7573acc0d60a6c208161217f68498552c87f6cc5c1cf5df027a95297332440923f23d6c3898848a5fb97f07250b004ee1173d2913aa2d3e6e8cc', 'super_admin');
 
 -- Sample Results
 INSERT INTO Results (event_id, first_place_school, second_place_school, third_place_school, submitted_at) VALUES
