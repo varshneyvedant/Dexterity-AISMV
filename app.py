@@ -5,8 +5,11 @@ from datetime import datetime, timezone
 from zoneinfo import ZoneInfo
 from flask import Flask, render_template, request, redirect, url_for, session, flash, jsonify, make_response
 from werkzeug.security import check_password_hash, generate_password_hash
+from dotenv import load_dotenv
 import pdfkit
 import tempfile
+
+load_dotenv()
 
 app = Flask(__name__)
 app.secret_key = 'silico_battles_2025_winner'
@@ -858,6 +861,31 @@ def super_admin_dashboard():
     submitted = [e for e in all_events if e['results_entered']]
 
     return render_template('super_admin_dashboard.html', pending_events=pending, submitted_events=submitted, schools=schools)
+
+@app.route('/init-first-user')
+def init_first_user():
+    conn = get_db_connection()
+    user_count = conn.execute('SELECT COUNT(id) FROM Users').fetchone()[0]
+
+    if user_count > 0:
+        conn.close()
+        return "Initial user already exists.", 403
+
+    username = os.environ.get('INITIAL_ADMIN_USER')
+    password = os.environ.get('INITIAL_ADMIN_PASS')
+
+    if not username or not password:
+        conn.close()
+        return "INITIAL_ADMIN_USER and INITIAL_ADMIN_PASS environment variables must be set.", 500
+
+    hashed_password = generate_password_hash(password, method='scrypt')
+    with conn:
+        conn.execute(
+            'INSERT INTO Users (username, password_hash, role) VALUES (?, ?, ?)',
+            (username, hashed_password, 'super_admin')
+        )
+    conn.close()
+    return "Initial super admin user created successfully.", 200
 
 if __name__ == '__main__':
     app.run(debug=True)
