@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Leaderboard</title>
+    <style>
+        body { font-family: sans-serif; }
+        table { width: 100%; border-collapse: collapse; }
+        th, td { border: 1px solid #ddd; padding: 8px; }
+        th { background-color: #f2f2f2; }
+        .rank-1 { background-color: #FFD700; }
+        .rank-2 { background-color: #C0C0C0; }
+        .rank-3 { background-color: #CD7F32; }
+    </style>
+</head>
+<body>
+    <h2>Leaderboard</h2>
+    <p>Generated on: {{ timestamp }}</p>
+    <table>
+        <thead>
+            <tr>
+                <th>Rank</th>
+                <th>School Name</th>
+                <th>Total Points</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for school in schools %}
+            <tr class="{% if school.rank <= 3 %}rank-{{ school.rank }}{% endif %}">
+                <td>{{ school.rank }}</td>
+                <td>{{ school.school }}</td>
+                <td>{{ school.total_points }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>

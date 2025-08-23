@@ -1,0 +1,28 @@
+{% extends "layout.html" %}
+{% block content %}
+<div class="content-block">
+    <h2>Audit Log</h2>
+    <div class="table-section">
+        <table>
+            <thead>
+                <tr>
+                    <th>Timestamp</th>
+                    <th>User</th>
+                    <th>Action</th>
+                    <th>Event</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for log in logs %}
+                <tr>
+                    <td data-label="Timestamp"><span class="cell-data">{{ log.timestamp.strftime('%B %d, %Y at %I:%M %p') }}</span></td>
+                    <td data-label="User"><span class="cell-data">{{ log.username }}</span></td>
+                    <td data-label="Action"><span class="cell-data">{{ log.action }}</span></td>
+                    <td data-label="Event"><span class="cell-data">{{ log.event_name }}</span></td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,57 @@
+{% extends "layout.html" %}
+{% block content %}
+<div class="content-block">
+    <h2>Manage Users</h2>
+
+    <div class="form-section">
+        <h3>Add New User</h3>
+        <form method="POST" action="{{ url_for('manage_users') }}">
+            <div class="form-group">
+                <label for="username">Username</label>
+                <input type="text" name="username" id="username" required>
+            </div>
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" name="password" id="password" required>
+            </div>
+            <div class="form-group">
+                <label for="role">Role</label>
+                <select name="role" id="role" required>
+                    <option value="" disabled selected>-- Select Role --</option>
+                    <option value="super_admin">Super Admin</option>
+                    <option value="admin">Admin</option>
+                </select>
+            </div>
+            <button type="submit">Add User</button>
+        </form>
+    </div>
+
+    <hr style="margin: 2rem 0; border-color: var(--border-color);">
+
+    <div class="table-section">
+        <h3 class="subsection-title">Existing Users</h3>
+        <table id="users-table">
+            <thead>
+                <tr>
+                    <th>Username</th>
+                    <th>Role</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for user in users %}
+                <tr>
+                    <td data-label="Username"><span class="cell-data">{{ user.username }}</span></td>
+                    <td data-label="Role"><span class="cell-data">{{ user.role }}</span></td>
+                    <td data-label="Actions">
+                        {% if user.id != session.user_id %}
+                        <button class="button-link-delete js-delete-user" data-delete-url="{{ url_for('delete_user', user_id=user.id) }}">Delete</button>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

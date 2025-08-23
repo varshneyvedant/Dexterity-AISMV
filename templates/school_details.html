@@ -1,0 +1,41 @@
+{% extends "layout.html" %}
+{% block content %}
+<div class="content-block">
+    <h2 class="subtitle">Performance Review</h2>
+    <h1>{{ school_name }}</h1>
+
+    <div class="points-info-container" style="margin-top: 2rem;">
+        <div class="points-info-title">Overall Performance</div>
+        <ul class="points-info-list">
+            <li><strong>Current Rank:</strong> {{ rank }}</li>
+            <li><strong>Total Points:</strong> {{ total_points }}</li>
+            <li><strong>1st Place Finishes:</strong> {{ summary['1st Place'] }}</li>
+            <li><strong>2nd Place Finishes:</strong> {{ summary['2nd Place'] }}</li>
+            <li><strong>3rd Place Finishes:</strong> {{ summary['3rd Place'] }}</li>
+        </ul>
+    </div>
+
+    <h3 class="section-title" style="margin-top: 2rem;">Event Positions</h3>
+    {% if results %}
+        <table>
+            <thead>
+                <tr>
+                    <th>Event</th>
+                    <th>Position</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for result in results %}
+                <tr>
+                    <td data-label="Event"><span class="cell-data">{{ result.event_name }}</span></td>
+                    <td data-label="Position"><span class="cell-data">{{ result.position }}</span></td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>This school has not placed in any submitted events yet.</p>
+    {% endif %}
+    <a href="{{ url_for('standings_view') }}" class="button-link">&larr; Back to Main Scoreboard</a>
+</div>
+{% endblock %}

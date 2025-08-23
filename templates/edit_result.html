@@ -1,0 +1,33 @@
+{% extends "layout.html" %}
+{% block content %}
+<div class="content-block">
+    <h2>Edit Results for: {{ event.name }}</h2>
+    <form method="POST">
+        <div class="form-group">
+            <label for="first_place">1st Place</label>
+            <select name="first_place" id="first_place" required>
+                {% for school in schools %}
+                    <option value="{{ school }}" {% if school == result.first_place_school %}selected{% endif %}>{{ school }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="second_place">2nd Place</label>
+            <select name="second_place" id="second_place" required>
+                {% for school in schools %}
+                    <option value="{{ school }}" {% if school == result.second_place_school %}selected{% endif %}>{{ school }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="third_place">3rd Place</label>
+            <select name="third_place" id="third_place" required>
+                {% for school in schools %}
+                    <option value="{{ school }}" {% if school == result.third_place_school %}selected{% endif %}>{{ school }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <button type="submit">Update Results</button>
+    </form>
+</div>
+{% endblock %}

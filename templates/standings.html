@@ -1,0 +1,80 @@
+{% extends "layout.html" %}
+{% block content %}
+<div class="content-block">
+    <h2 class="subtitle">Live Standings for Sillico Battles v21.1</h2>
+    
+    <div id="chart-container">
+        <canvas id="scoreChart"></canvas>
+    </div>
+
+    {% if last_updated %}
+    <div class="last-updated">
+        Last Updated: {{ last_updated.strftime('%B %d, %Y at %I:%M %p') }}
+    </div>
+    {% endif %}
+    <div style="text-align: center; margin-bottom: 1rem;">
+        <a href="{{ url_for('podium') }}" class="button-link">View Podium</a>
+        {% if not for_pdf %}
+        <a href="{{ url_for('download_leaderboard_pdf') }}" class="button-link">Download as PDF</a>
+        {% endif %}
+    </div>
+    <h3 class="section-title">Overall Rankings</h3>
+    {% if schools %}
+        <table id="leaderboard-table">
+            <thead>
+                <tr>
+                    <th>Rank</th>
+                    <th>School Name</th>
+                    <th>Total Points</th>
+                    <th class="actions-column">Details</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for school in schools %}
+                {% set is_top_3 = school.rank <= 3 %}
+                <tr class="{% if is_top_3 %}js-celebration-trigger rank-{{ school.rank }}{% endif %}"
+                    data-href="{{ url_for('school_details', school_name=school.school) }}"
+                    {% if is_top_3 %}data-rank="{{ school.rank }}"{% endif %}>
+                    <td data-label="Rank"><span class="cell-data">{{ school.rank }} {% if is_top_3 %}🏆{% endif %}</span></td>
+                    <td data-label="School Name"><span class="cell-data">{{ school.school }}</span></td>
+                    <td data-label="Total Points"><span class="cell-data">{{ school.total_points }}</span></td>
+                    <td data-label="Details" class="actions-column">
+                        <a href="{{ url_for('school_details', school_name=school.school) }}" class="button-link-details">View Details</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>No results have been submitted yet. The leaderboard will update as results come in.</p>
+    {% endif %}
+
+    <div class="tie-breaker-info" style="margin-top: 1rem; text-align: center; font-size: 0.9rem; color: #aaa;">
+        <p><strong>Note on Tie-Breakers:</strong> In case of a tie in total points, the ranking is determined by the number of 1st place finishes, then 2nd place finishes, then 3rd place finishes. If a tie still persists, ranks are shared between schools.</p>
+    </div>
+
+    <!-- Celebration Pop-up -->
+    <div id="celebration-popup" class="celebration-overlay" style="display: none;">
+        <div class="celebration-content">
+            <span id="celebration-rank"></span>
+        </div>
+    </div>
+
+    {% if all_results %}
+    <div class="recent-achievements">
+        <h3 class="section-title">All Event Results</h3>
+        <div class="achievements-grid">
+        {% for result in all_results %}
+            <div class="achievement-card">
+                <h4>{{ result.name }}</h4>
+                <p>🥇 <strong>1st:</strong> {{ result.first_place_school }}</p>
+                <p>🥈 <strong>2nd:</strong> {{ result.second_place_school }}</p>
+                <p>🥉 <strong>3rd:</strong> {{ result.third_place_school }}</p>
+            </div>
+        {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+</div>
+
+{% endblock %}

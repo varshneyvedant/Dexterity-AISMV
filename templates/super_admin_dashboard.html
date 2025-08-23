@@ -1,0 +1,129 @@
+{% extends "layout.html" %}
+{% block content %}
+<div class="content-block">
+    <h2>Super Admin Dashboard</h2>
+    <p>Welcome, Super Admin!</p>
+    <p>From here, you can manage users and have full control over the platform.</p>
+    <div class="admin-actions">
+        <a href="{{ url_for('manage_schools') }}" class="button-link">Manage Schools</a>
+        <a href="{{ url_for('manage_events') }}" class="button-link">Manage Events</a>
+        <a href="{{ url_for('manage_users') }}" class="button-link">Manage Users</a>
+        <a href="{{ url_for('audit_log') }}" class="button-link">View Audit Log</a>
+    </div>
+
+    <hr style="margin: 2rem 0; border-color: var(--border-color);">
+
+    <div class="predictions-section">
+        <h3 class="subsection-title">Podium Predictions</h3>
+        <p>Based on current data, here are the likely top contenders:</p>
+        <ul id="predictions-list">
+            <li>Loading...</li>
+        </ul>
+    </div>
+
+    <hr style="margin: 2rem 0; border-color: var(--border-color);">
+
+    <div class="form-section">
+        <h3>Enter New Results</h3>
+        {% if pending_events %}
+            <form method="POST" action="{{ url_for('admin_dashboard') }}">
+                <div class="form-group">
+                    <label for="event_id">Select Pending Event</label>
+                    <select name="event_id" id="event_id" required>
+                        <option value="" disabled selected>-- Choose an Event --</option>
+                        {% for event in pending_events %}
+                            <option value="{{ event.id }}">{{ event.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="first_place">1st Place</label>
+                    <select name="first_place" id="first_place" required>
+                        <option value="">-- Select School --</option>
+                        {% for school in schools %}<option value="{{ school }}">{{ school }}</option>{% endfor %}
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="second_place">2nd Place</label>
+                    <select name="second_place" id="second_place" required>
+                        <option value="">-- Select School --</option>
+                        {% for school in schools %}<option value="{{ school }}">{{ school }}</option>{% endfor %}
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="third_place">3rd Place</label>
+                    <select name="third_place" id="third_place" required>
+                         <option value="">-- Select School --</option>
+                        {% for school in schools %}<option value="{{ school }}">{{ school }}</option>{% endfor %}
+                    </select>
+                </div>
+                <button type="submit">Submit Results</button>
+            </form>
+        {% else %}
+            <p>All event results have been submitted.</p>
+        {% endif %}
+    </div>
+
+    <hr style="margin: 2rem 0; border-color: var(--border-color);">
+
+    <div class="table-section">
+        <h3 class="subsection-title">Submitted Results</h3>
+        {% if submitted_events %}
+            <table id="submitted-results-table">
+                <thead>
+                    <tr>
+                        <th>Event</th>
+                        <th>1st Place</th>
+                        <th>2nd Place</th>
+                        <th>3rd Place</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for event in submitted_events %}
+                    <tr>
+                        <td data-label="Event"><span class="cell-data">{{ event.name }}</span></td>
+                        <td data-label="1st Place"><span class="cell-data">{{ event.first_place_school }}</span></td>
+                        <td data-label="2nd Place"><span class="cell-data">{{ event.second_place_school }}</span></td>
+                        <td data-label="3rd Place"><span class="cell-data">{{ event.third_place_school }}</span></td>
+                        <td data-label="Action"><a href="{{ url_for('edit_result', event_id=event.id) }}">Edit</a></td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+             <p>No results have been submitted yet.</p>
+        {% endif %}
+    </div>
+
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', async function() {
+    try {
+        const response = await fetch('/api/predictive_analytics');
+        if (!response.ok) {
+            throw new Error('Failed to fetch predictions');
+        }
+        const predictions = await response.json();
+        const list = document.getElementById('predictions-list');
+        list.innerHTML = '';
+
+        if (predictions.length === 0) {
+            list.innerHTML = '<li>No predictions available yet.</li>';
+            return;
+        }
+
+        predictions.forEach(school => {
+            const li = document.createElement('li');
+            li.textContent = `${school.school} (Projected Points: ${school.total_points})`;
+            list.appendChild(li);
+        });
+    } catch (error) {
+        console.error('Error fetching predictions:', error);
+        const list = document.getElementById('predictions-list');
+        list.innerHTML = '<li>Could not load predictions.</li>';
+    }
+});
+</script>
+{% endblock %}

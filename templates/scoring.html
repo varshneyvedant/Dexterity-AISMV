@@ -1,0 +1,27 @@
+{% extends "layout.html" %}
+{% block content %}
+<div class="content-block">
+    <h2 class="section-title">Scoring System</h2>
+    <p style="text-align: center; margin-bottom: 2rem;">Points are awarded for each event as follows:</p>
+    <table id="events-table">
+        <thead>
+            <tr>
+                <th>Event</th>
+                <th>1st Place</th>
+                <th>2nd Place</th>
+                <th>3rd Place</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for event in events %}
+            <tr>
+                <td data-label="Event">{{ event.name }}</td>
+                <td data-label="1st Place">{{ event.first_place_points }}</td>
+                <td data-label="2nd Place">{{ event.second_place_points }}</td>
+                <td data-label="3rd Place">{{ event.third_place_points }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

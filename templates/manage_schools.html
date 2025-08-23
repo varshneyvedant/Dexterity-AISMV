@@ -1,0 +1,46 @@
+{% extends "layout.html" %}
+{% block content %}
+<div class="content-block">
+    <h2>Manage Schools</h2>
+
+    <div class="form-section">
+        <h3 class="subsection-title">Add New School</h3>
+        <form method="POST" action="{{ url_for('manage_schools') }}" class="form-inline">
+            <div class="form-group">
+                <label for="name" class="sr-only">School Name</label>
+                <input type="text" name="name" id="name" placeholder="Enter new school name" required>
+            </div>
+            <button type="submit">Add School</button>
+        </form>
+    </div>
+
+    <hr style="margin: 2rem 0; border-color: var(--border-color);">
+
+    <div class="table-section">
+        <h3 class="subsection-title">Existing Schools</h3>
+        {% if schools %}
+            <table id="schools-table">
+                <thead>
+                    <tr>
+                        <th>School Name</th>
+                        <th class="actions-column">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for school in schools %}
+                    <tr>
+                        <td data-label="School Name"><span class="cell-data">{{ school.name }}</span></td>
+                        <td data-label="Actions" class="actions-column">
+                            <a href="{{ url_for('edit_school', school_id=school.id) }}" class="button-link-edit">Edit</a>
+                            <button class="button-link-delete js-delete-school" data-school-id="{{ school.id }}" data-delete-url="{{ url_for('delete_school', school_id=school.id) }}">Delete</button>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <p>No schools found. Add one using the form above.</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
