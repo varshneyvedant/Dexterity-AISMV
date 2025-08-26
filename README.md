@@ -8,7 +8,7 @@ This document will guide you through exploring the application, both as a live d
 
 ## 🚀 Live Demo
 
-Experience the live, deployed application here: **[Link to Your Deployed Site]**
+Experience the live, deployed application here: **[[Link to Deployed Site](https://podium-app.onrender.com/)]**
 
 ### Exploring the Admin Features
 
